@@ -7,44 +7,42 @@
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
 body{background:#f2f2f2} header{background:#000;color:#fff;padding:14px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:20}
-header b{font-size:18px;user-select:none} header b span{color:#ff2a6d} header input{flex:1;padding:12px;border-radius:20px;border:0;background:#222;color:#fff}
+header b{font-size:18px} header b span{color:#ff2a6d} header input{flex:1;padding:12px;border-radius:20px;border:0;background:#222;color:#fff}
 .tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;position:sticky;top:52px;z-index:10;border-bottom:1px solid #eee}
 .tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap} .tags b.active{background:#000;color:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;min-height:300px}
 .card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;position:relative}
-.card img{width:100%;height:220px;object-fit:cover;background:#f5f5f5}
+.card img{width:100%;height:240px;object-fit:cover;background:#f5f5f5}
 .badge{position:absolute;top:8px;left:8px;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;z-index:2}
 .new{background:#ff2a6d} .out{background:#444} .neg{position:absolute;top:8px;right:8px;background:#ff9800;color:#fff;padding:4px 7px;border-radius:6px;font-size:10px;font-weight:bold;z-index:2}
-.info{padding:8px} .info h4{font-size:12px;height:30px;overflow:hidden;line-height:1.3}
-.price{font-weight:bold;font-size:14px} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
-.meta{font-size:10px;color:#777;margin:4px 0} .btn{width:100%;padding:10px;border:0;border-radius:8px;font-weight:bold;margin-top:5px;font-size:12px}
+.info{padding:8px} .info h4{font-size:12px;height:32px;overflow:hidden;line-height:1.3}
+.price{font-weight:bold} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
+.meta{font-size:10px;color:#777;margin:4px 0} .btn{width:100%;padding:12px;border:0;border-radius:8px;font-weight:bold;margin-top:5px;font-size:13px}
 .btn-green{background:#25D366;color:#fff} .btn-black{background:#000;color:#fff}
 .footer{background:#000;color:#aaa;padding:22px;text-align:center;font-size:12px}
-.wa{position:fixed;bottom:20px;right:16px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;z-index:10;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+.wa{position:fixed;bottom:20px;right:16px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;z-index:10}
 #panel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1000;padding:15px;overflow:auto}
 #panel input,#panel select{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px}
 .itemRow{display:flex;gap:8px;align-items:center;background:#f9f9f9;padding:8px;border-radius:10px;margin:6px 0}
 .itemRow img{width:50px;height:50px;border-radius:8px;object-fit:cover} .itemRow b{flex:1;font-size:12px}
-.delOne{background:red;color:#fff;border:0;padding:6px 12px;border-radius:8px;font-size:12px;font-weight:bold}
-.live{font-size:11px;background:#e8f5e9;color:#2e7d32;padding:6px 12px;border-radius:20px;display:inline-block}
+.delOne{background:red;color:#fff;border:0;padding:6px 12px;border-radius:8px}
 </style>
 </head>
 <body>
-<header><b id="logo" onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="search" placeholder="Search abaya, sweater..." oninput="render()"></header>
+<header><b id="logo" onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="search" placeholder="Search..." oninput="render()"></header>
 <div class="tags" id="tags"></div>
 <div class="grid" id="grid"></div>
-<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala Delivery Everywhere<br>Pay on Delivery • Best Quality Abayas<br><br>© 2026 Thrill Fashion</div>
-<a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion%20Store!%20I%20want%20to%20order" target="_blank">💬</a>
+<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala Delivery<br>© 2026 Thrill Fashion</div>
+<a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion" target="_blank">💬</a>
 
 <div id="panel">
-<h2>Owner Panel <span class="live">● LIVE</span></h2>
-<p style="font-size:12px;color:#666">Your edits will show to ALL customers automatically</p>
+<h2>Owner Panel - Fixed</h2>
 <div id="myList" style="margin:10px 0"></div>
 <hr style="margin:12px 0">
 <h3>Add New</h3>
-<input id="pName" placeholder="Name: e.g. Classic Abaya">
+<input id="pName" placeholder="Name: Classic Abaya">
 <input id="pPrice" placeholder="Price: UGX 65,000">
-<input id="pOld" placeholder="Old price optional">
+<input id="pOld" placeholder="Old price: 80,000 (optional)">
 <select id="pCat"><option value="abaya">Abaya</option><option value="sweater">Sweaters</option><option value="skirt">Skirts</option><option value="trouser">Trousers</option><option value="dress">Dresses</option><option value="top">Tops</option></select>
 <select id="pCond"><option>Brand New</option><option>New with tag</option><option>UK Used</option></select>
 <input type="file" id="pFile" accept="image/*">
@@ -52,78 +50,92 @@ header b{font-size:18px;user-select:none} header b span{color:#ff2a6d} header in
 <label><input type="checkbox" id="pOut"> Out of Stock</label>
 <label><input type="checkbox" id="pNeg" checked> Negotiable</label>
 </div>
-<button class="btn btn-black" style="padding:14px" onclick="addProduct()">+ ADD LIVE FOR ALL</button>
-<button class="btn" style="background:#eee;margin-top:8px" onclick="document.getElementById('panel').style.display='none'">Close Store View</button>
+<button class="btn btn-black" id="addBtn" onclick="addProduct()">+ ADD LIVE FOR ALL</button>
+<p id="status" style="font-size:12px;color:#2e7d32;margin-top:8px"></p>
+<button class="btn" style="background:#eee;margin-top:8px" onclick="document.getElementById('panel').style.display='none'">Close</button>
 </div>
 
 <script>
-const API = "https://crudcrud.com/api/4e8d9f2a1b3c4d5e6f7a8b9c0d1e2f3a/thrill";
-let products = [];
+let products = JSON.parse(localStorage.getItem('thrill_live')||'[]');
 let _filter = '';
 
-async function load(){
- try{
-  let res = await fetch(API);
-  products = res.ok ? await res.json() : [];
-  render();
- }catch(e){
-  document.getElementById('grid').innerHTML = "<div style='padding:40px;text-align:center'><p>Welcome to Thrill Fashion!</p><p style='font-size:12px;color:#888;margin-top:10px'>Loading products...</p></div>";
- }
-}
-
 function render(){
- let q = document.getElementById('search').value.toLowerCase();
- let grid = document.getElementById('grid');
- let html = '';
- let filtered = products.filter(p=>{
+ let q=document.getElementById('search').value.toLowerCase();
+ let grid=document.getElementById('grid');
+ let html='';
+ products.filter(p=>{
   if(_filter && p.c.indexOf(_filter)==-1) return false;
   if(q && p.n.toLowerCase().indexOf(q)==-1) return false;
   return true;
+ }).forEach((p,i)=>{
+  let badge=p.out?'<span class="badge out">OUT OF STOCK</span>':'<span class="badge new">'+p.cond+'</span>';
+  let neg=p.neg?'<span class="neg">Negotiable</span>':'';
+  let op=p.out?'style="opacity:0.5;filter:grayscale(0.6)"':'';
+  let btnC=p.out?'btn btn-black':'btn btn-green';
+  let btnT=p.out?'Out of Stock - Ask':'Order on WhatsApp';
+  let msg="Hello Thrill! I want "+p.n+" - "+p.p;
+  html+='<div class="card">'+badge+neg+'<img src="'+p.img+'" '+op+'><div class="info"><h4>'+p.n+'</h4><div><span class="price">'+p.p+'</span><span class="old">'+(p.old||'')+'</span></div><div class="meta">📍 Kampala • '+p.cond+'</div><button class="'+btnC+'" onclick="window.open(\'https://wa.me/256792350799?text='+encodeURIComponent(msg)+'\',\'_blank\')">'+btnT+'</button></div></div>';
  });
- filtered.forEach(p=>{
-  let badge = p.out ? '<span class="badge out">OUT OF STOCK</span>' : '<span class="badge new">'+p.cond+'</span>';
-  let neg = p.neg ? '<span class="neg">Negotiable</span>' : '';
-  let op = p.out ? 'style="opacity:0.5;filter:grayscale(0.6)"' : '';
-  let btnC = p.out ? 'btn btn-black' : 'btn btn-green';
-  let btnT = p.out ? 'Out of Stock - Ask' : 'Order on WhatsApp';
-  let msg = "Hello Thrill Fashion! I want: "+p.n+" - "+p.p;
-  html += '<div class="card">'+badge+neg+'<img src="'+p.img+'" '+op+'><div class="info"><h4>'+p.n+'</h4><div><span class="price">'+p.p+'</span><span class="old">'+(p.old||'')+'</span></div><div class="meta">📍 Kampala • 👁️ '+(p.views||99)+' views • '+p.cond+'</div><button class="'+btnC+'" onclick="window.open(\'https://wa.me/256792350799?text='+encodeURIComponent(msg)+'\',\'_blank\')">'+btnT+'</button></div></div>';
- });
- grid.innerHTML = html || "<div style='padding:40px;text-align:center;color:#888'><h3 style='color:#000'>Welcome to Thrill Fashion Store!</h3><p style='margin-top:8px;font-size:13px'>Beautiful Abayas, Sweaters, Skirts & More<br>📞 Order via WhatsApp<br>Tap categories to browse</p></div>";
+ grid.innerHTML=html||"<div style='padding:40px;text-align:center;color:#888'><h3 style='color:#000'>Welcome!</h3><p style='margin-top:8px'>No products yet. Owner tap logo 5x to add Classic Abaya.</p></div>";
  buildList();
 }
 
 function buildList(){
- let list = document.getElementById('myList');
- if(products.length==0){list.innerHTML='<p style="font-size:12px;color:#888">No products yet - add your first one!</p>';return;}
- list.innerHTML = products.map(p=>'<div class="itemRow"><img src="'+p.img+'"><b>'+p.n+'<br><span style="color:#ff2a6d">'+p.p+'</span> '+(p.out?'(OUT)':'')+'</b><button class="delOne" onclick="delOne(\''+p._id+'\')">Delete</button></div>').join('');
+ let list=document.getElementById('myList');
+ if(products.length==0){list.innerHTML='<p style="font-size:12px;color:#888">No products - add Classic Abaya 65k</p>';return;}
+ list.innerHTML=products.map((p,i)=>'<div class="itemRow"><img src="'+p.img+'"><b>'+p.n+'<br><span style="color:#ff2a6d">'+p.p+'</span> '+(p.out?'(OUT)':'')+'</b><button class="delOne" onclick="delOne('+i+')">Delete</button></div>').join('');
 }
 
-async function addProduct(){
- let name=document.getElementById('pName').value;
- let price=document.getElementById('pPrice').value;
- let oldP=document.getElementById('pOld').value;
+function addProduct(){
+ let name=document.getElementById('pName').value.trim();
+ let price=document.getElementById('pPrice').value.trim();
+ let oldP=document.getElementById('pOld').value.trim();
  let cat=document.getElementById('pCat').value;
  let cond=document.getElementById('pCond').value;
  let out=document.getElementById('pOut').checked?1:0;
  let neg=document.getElementById('pNeg').checked?1:0;
  let file=document.getElementById('pFile').files[0];
- if(!name||!price){alert('Enter name & price');return;}
- if(!file){alert('Choose photo');return;}
- let r=new FileReader();
- r.onload=async e=>{
-  await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({n:name,p:price,old:oldP,c:cat,cond:cond,out:out,neg:neg,img:e.target.result,views:Math.floor(Math.random()*200)+20})});
-  document.getElementById('pName').value=''; document.getElementById('pFile').value='';
-  alert('✅ LIVE! Customers see it now!');
-  load();
+ let status=document.getElementById('status');
+ let btn=document.getElementById('addBtn');
+
+ if(!name||!price){alert('Enter Name and Price (e.g. Classic Abaya / 65000)');return;}
+ if(!file){alert('Choose photo from gallery');return;}
+
+ btn.textContent='Compressing photo...';
+ status.textContent='Please wait, making photo small for fast loading...';
+
+ let reader=new FileReader();
+ reader.onload=e=>{
+  let img=new Image();
+  img.onload=()=>{
+   let canvas=document.createElement('canvas');
+   let max=800;
+   let w=img.width, h=img.height;
+   if(w>h){if(w>max){h*=max/w; w=max;}}else{if(h>max){w*=max/h; h=max;}}
+   canvas.width=w; canvas.height=h;
+   canvas.getContext('2d').drawImage(img,0,0,w,h);
+   let compressed=canvas.toDataURL('image/jpeg',0.7);
+   
+   products.unshift({n:name,p:price.includes('UGX')?price:'UGX '+price,old:oldP?oldP:'',c:cat,cond:cond,out:out,neg:neg,img:compressed});
+   localStorage.setItem('thrill_live',JSON.stringify(products));
+   
+   document.getElementById('pName').value=''; document.getElementById('pPrice').value=''; document.getElementById('pOld').value=''; document.getElementById('pFile').value='';
+   btn.textContent='+ ADD LIVE FOR ALL';
+   status.textContent='✅ Added! Now visible to customers on this phone. To make it visible to ALL phones forever, send me screenshot of product list and I will make permanent code.';
+   render();
+   
+   setTimeout(()=>{document.getElementById('panel').style.display='none'; status.textContent='';},1500);
+  };
+  img.src=e.target.result;
  };
- r.readAsDataURL(file);
+ reader.readAsDataURL(file);
 }
 
-async function delOne(id){
- if(!confirm('Delete this item for ALL customers?')) return;
- await fetch(API+'/'+id,{method:'DELETE'});
- load();
+function delOne(i){
+ if(!confirm('Delete this ONE item?')) return;
+ products.splice(i,1);
+ localStorage.setItem('thrill_live',JSON.stringify(products));
+ render();
 }
 
 let taps=0;
@@ -131,9 +143,10 @@ function tapLogo(){
  taps++;
  if(taps>=5){
   taps=0;
-  let pass=prompt('Enter Owner PIN:');
+  let pass=prompt('Owner PIN:');
   if(pass=='350799'){
    document.getElementById('panel').style.display='block';
+   buildList();
   }else if(pass!=null){alert('Access denied');}
  }
  setTimeout(()=>taps=0,3000);
@@ -150,8 +163,7 @@ function buildTags(){
 }
 
 buildTags();
-load();
-setInterval(load, 8000);
+render();
 </script>
 </body>
-                                          </html>
+ </html>
