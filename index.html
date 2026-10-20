@@ -3,75 +3,93 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thrill Fashion Store</title>
+<title>Thrill Fashion Store - Jiji Style</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#fff7f9} header{background:#000;color:#fff;padding:12px;display:flex;gap:10px;position:sticky;top:0;z-index:9}
+body{background:#f2f2f2} header{background:#000;color:#fff;padding:12px;display:flex;gap:8px;position:sticky;top:0;z-index:20}
 header b span{color:#ff2a6d} input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff}
-.hero{padding:0} .hero img{width:100%;height:200px;object-fit:cover}
-.tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;border-bottom:1px solid #eee;position:sticky;top:50px}
+.tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;border-bottom:1px solid #e5e5e5;position:sticky;top:50px;z-index:10}
 .tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap}
 .tags b.active{background:#000;color:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 4px 14px rgba(0,0,0,.1);border:1px solid #ffe0e8}
-.card img{width:100%;height:200px;object-fit:cover}
-.info{padding:10px} .info h4{font-size:12px;height:30px;overflow:hidden}
-.price{color:#ff2a6d;font-weight:bold;font-size:14px} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:5px}
-.order{width:100%;background:#25D366;color:#fff;border:0;padding:10px;border-radius:10px;font-weight:bold;margin-top:6px;font-size:12px}
-.footer{background:#000;color:#aaa;padding:20px;text-align:center;font-size:12px;line-height:1.6}
-.wa{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;box-shadow:0 4px 16px rgba(0,0,0,.3);z-index:99}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #eee;position:relative}
+.card img{width:100%;height:210px;object-fit:cover;background:#fafafa}
+.badge{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;z-index:2}
+.badge.new{background:#ff2a6d} .badge.sold{background:#000} .badge.out{background:#888}
+.badge.neg{top:8px;right:8px;left:auto;background:#ff9800}
+.heart{position:absolute;top:8px;right:8px;background:#fff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;box-shadow:0 2px 6px rgba(0,0,0,.2)}
+.info{padding:9px} .info h4{font-size:12px;height:30px;overflow:hidden;line-height:1.3}
+.price{color:#000;font-weight:bold;font-size:14px} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
+.jiji-meta{font-size:10px;color:#888;margin:4px 0;display:flex;gap:6px;flex-wrap:wrap}
+.jiji-meta span{background:#f5f5f5;padding:2px 6px;border-radius:4px}
+.order{width:100%;background:#25D366;color:#fff;border:0;padding:9px;border-radius:8px;font-weight:bold;margin-top:6px;font-size:11px}
+.order:disabled{background:#ccc}
+.order.outbtn{background:#000}
+.footer{background:#000;color:#aaa;padding:20px;text-align:center;font-size:11px}
+.wa{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;z-index:99;box-shadow:0 4px 12px rgba(0,0,0,.3)}
+#adminPanel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:100;padding:14px;overflow:auto}
+#adminPanel input, #adminPanel select{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ddd;font-size:13px}
+#adminPanel label{font-size:12px;display:flex;gap:6px;align-items:center;margin:6px 0}
+#adminPanel button{width:100%;padding:12px;border-radius:10px;border:0;font-weight:bold;margin-top:8px}
+.btn-black{background:#000;color:#fff} .btn-pink{background:#ff2a6d;color:#fff}
+.adminBtn{position:fixed;bottom:16px;left:16px;background:#000;color:#fff;padding:9px 12px;border-radius:20px;font-size:11px;z-index:99;border:1px solid #ff2a6d}
+.del{position:absolute;top:36px;right:8px;background:red;color:#fff;border:0;border-radius:50%;width:22px;height:22px;display:none}
+.admin .del{display:block}
 </style>
 </head>
 <body>
-<header><b>THRILL <span>FASHION</span></b><input id="s" placeholder="Search abaya, sweater..."></header>
-
-<div class="hero">
-<img src="https://raw.githubusercontent.com/patrick59555/live-tv/main/banner.jpg" onerror="this.style.display='none'">
-</div>
-
-<div class="tags">
-<b class="active" onclick="f('',this)">All</b>
-<b onclick="f('abaya',this)">Abaya</b>
-<b onclick="f('sweater',this)">Sweaters</b>
-<b onclick="f('skirt',this)">Skirts</b>
-<b onclick="f('trouser',this)">Trousers</b>
-</div>
-
+<header><b onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="s" placeholder="Search abaya, sweater..."></header>
+<div class="tags" id="tags"></div>
 <div class="grid" id="grid"></div>
-
 <a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion%20Store!" target="_blank">💬</a>
+<button class="adminBtn" onclick="openAdmin()">⚙️ Owner Edit</button>
 
-<div class="footer">
-<b style="color:#ff2a6d">THRILL FASHION STORE</b><br>
-📞 +256 792 350799 | Kampala Delivery Everywhere<br>
-Dresses • Abaya • Sweaters • Ponchos • Skirts • Trousers<br>
-Pay on Delivery | MTN MoMo Accepted<br><br>
-© 2026 Thrill Fashion Store
+<div id="adminPanel">
+<h3>Thrill Owner Panel - Jiji Style</h3>
+<input id="pName" placeholder="Product Name">
+<input id="pPrice" placeholder="Price: UGX 145,000">
+<input id="pOld" placeholder="Old Price optional">
+<select id="pCat"><option value="abaya">Abaya</option><option value="sweater">Sweaters</option><option value="skirt">Skirts</option><option value="trouser">Trousers</option><option value="dress">Dresses</option><option value="top">Tops & Tees</option></select>
+<select id="pCond"><option value="Brand New">Brand New</option><option value="New with tag">New with tag</option><option value="UK Used">UK Used - Like New</option></select>
+<input type="file" id="pFile" accept="image/*">
+<label><input type="checkbox" id="pOut"> Mark as OUT OF STOCK / SOLD</label>
+<label><input type="checkbox" id="pNeg" checked> Negotiable (like Jiji)</label>
+<label><input type="checkbox" id="pFeat"> Featured / Boost</label>
+<button class="btn-pink" onclick="addProduct()">+ Add Product</button>
+<button class="btn-black" onclick="closeAdmin()">Done - View Store</button>
+<button style="background:#eee;color:#000" class="btn-black" onclick="clearAll()">Delete All My Added</button>
 </div>
+
+<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala<br>Jiji Style - Out of Stock | Negotiable | Views | Condition<br>© 2026 Thrill Fashion</div>
 
 <script>
-let items=[
-{n:"Maroon Dubai Abaya - Gold Embroidery",p:"UGX 145,000",old:"180,000",c:"abaya",img:"abaya.jpg"},
-{n:"Beige Fur Sweater - Warm Ladies",p:"UGX 85,000",old:"110,000",c:"sweater",img:"sweater.jpg"},
-{n:"Pleated Skirt - Gold & White Wave",p:"UGX 65,000",old:"85,000",c:"skirt",img:"skirt.jpg"},
-{n:"Cargo Jeans - Ladies Trousers Mix",p:"UGX 70,000",old:"90,000",c:"trouser",img:"trousers.jpg"},
-{n:"Black Abaya - Classic",p:"UGX 130,000",old:"160k",c:"abaya",img:"abaya.jpg"},
-{n:"Wool Sweater - Plus Size",p:"UGX 75,000",old:"95k",c:"sweater",img:"sweater.jpg"},
-{n:"Long Skirt - Ankara",p:"UGX 60,000",old:"",c:"skirt",img:"skirt.jpg"},
-{n:"Jeans Trousers - High Waist",p:"UGX 68,000",old:"",c:"trouser",img:"trousers.jpg"}
+let defaultItems=[
+{n:"Maroon Dubai Abaya - Gold Embroidery",p:"UGX 145,000",old:"180,000",c:"abaya",cond:"Brand New",neg:true,out:false,views:124,loc:"Kampala",img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500"},
+{n:"Beige Fur Sweater - Warm Ladies",p:"UGX 85,000",old:"110,000",c:"sweater",cond:"New with tag",neg:true,out:false,views:89,loc:"Kampala",img:"https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500"},
+{n:"Pleated Skirt - Gold & White Wave",p:"UGX 65,000",old:"85,000",c:"skirt",cond:"Brand New",neg:false,out:true,views:210,loc:"Wandegeya",img:"https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=500"},
+{n:"Cargo Jeans - Ladies Trousers Mix",p:"UGX 70,000",old:"90,000",c:"trouser",cond:"UK Used",neg:true,out:false,views:56,loc:"Kampala",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500"}
 ];
-let grid=document.getElementById('grid');
-function f(q,el){
-if(el){document.querySelectorAll('.tags b').forEach(b=>b.classList.remove('active'));el.classList.add('active')}
-grid.innerHTML='';
-items.filter(i=>q==''||i.c.includes(q)||i.n.toLowerCase().includes(q.toLowerCase())).forEach(it=>{
-let msg=`Hello Thrill Fashion Store! I want: ${it.n} - ${it.p}`;
-let d=document.createElement('div');d.className='card';
-d.innerHTML=`<img src="${it.img}"><div class="info"><h4>${it.n}</h4><div><span class="price">${it.p}</span><span class="old">${it.old}</span></div><button class="order" onclick="window.open('https://wa.me/256792350799?text=${encodeURIComponent(msg)}','_blank')">Order WhatsApp</button></div>`;
-grid.appendChild(d);
+
+function loadItems(){
+let saved=JSON.parse(localStorage.getItem('thrill_products')||'[]');
+return [...saved, ...defaultItems];
+}
+let items=loadItems();
+let grid=document.getElementById('grid'), tagsDiv=document.getElementById('tags');
+let cats=['All','abaya','sweater','skirt','trouser','dress','top'];
+let currentFilter='';
+
+function renderTags(){
+tagsDiv.innerHTML='';
+cats.forEach(c=>{
+let b=document.createElement('b'); b.textContent=c; if((c=='All'&&currentFilter=='')||c==currentFilter) b.className='active';
+b.onclick=()=>{currentFilter=c=='All'?'':c; renderTags(); renderGrid();}; tagsDiv.appendChild(b);
 });
 }
-f(''); document.getElementById('s').oninput=e=>f(e.target.value);
-</script>
-</body>
-</html>
+
+function renderGrid(){
+let q=document.getElementById('s').value.toLowerCase();
+grid.innerHTML='';
+items.filter(it=>{
+let catOk=currentFilter==''||it.c.includes(currentFilter);
+let searchOk=q==
