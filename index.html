@@ -1,391 +1,4 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>My Goods Store</title>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
-
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-
-    body {
-      background: #f0f2f5;
-      color: #333;
-      line-height: 1.6;
-    }
-
-    header {
-      background: #1a73e8;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-    }
-
-    .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 20px;
-    }
-
-    .form-card {
-      background: white;
-      padding: 25px;
-      border-radius: 12px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      margin-bottom: 40px;
-    }
-
-    .form-card h2 {
-      margin-bottom: 20px;
-      color: #1a73e8;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
-
-    input, textarea {
-      width: 100%;
-      padding: 12px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      font-size: 16px;
-    }
-
-    textarea {
-      height: 100px;
-      resize: vertical;
-    }
-
-    button {
-      background: #1a73e8;
-      color: white;
-      border: none;
-      padding: 12px 28px;
-      border-radius: 8px;
-      font-size: 16px;
-      cursor: pointer;
-      transition: background 0.3s;
-    }
-
-    button:hover {
-      background: #1557b0;
-    }
-
-    .goods-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 25px;
-    }
-
-    .good-card {
-      background: white;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-      transition: transform 0.3s;
-    }
-
-    .good-card:hover {
-      transform: translateY(-5px);
-    }
-
-    .good-card img {
-      width: 100%;
-      height: 200px;
-      object-fit: cover;
-    }
-
-    .good-info {
-      padding: 18px;
-    }
-
-    .good-info h3 {
-      margin-bottom: 8px;
-      color: #222;
-    }
-
-    .price {
-      color: #1a73e8;
-      font-size: 20px;
-      font-weight: bold;
-      margin-bottom: 10px;
-    }
-
-    .description {
-      color: #555;
-      font-size: 14px;
-    }
-
-    .empty {
-      text-align: center;
-      padding: 40px;
-      color: #888;
-      grid-column: 1 / -1;
-    }
-  </style>
-</head>
-<body>
-
-  <header>
-    <h1>My Goods Store</h1>
-    <p>Post your goods and they appear live</p>
-  </header>
-
-  <div class="container">
-
-    <!-- Add Goods Form -->
-    <div class="form-card">
-      <h2>Post a New Good</h2>
-      <form id="add-good-form">
-        <div class="form-group">
-          <label>Good Name</label>
-          <input type="text" id="name" placeholder="e.g. iPhone 15" required>
-        </div>
-        <div class="form-group">
-          <label>Price (KES)</label>
-          <input type="number" id="price" placeholder="e.g. 85000" required>
-        </div>
-        <div class="form-group">
-          <label>Description</label>
-          <textarea id="description" placeholder="Write a short description..." required></textarea>
-        </div>
-        <div class="form-group">
-          <label>Image URL</label>
-          <input type="url" id="image" placeholder="https://example.com/photo.jpg" required>
-        </div>
-        <button type="submit">Post Good</button>
-      </form>
-    </div>
-
-    <!-- Goods List -->
-    <h2 style="margin-bottom: 20px;">All Posted Goods</h2>
-    <div class="goods-grid" id="goods-list">
-      <div class="empty">Loading goods...</div>
-    </div>
-
-  </div>
-
-  <script>
-    // ======================
-    // 1. PASTE YOUR FIREBASE CONFIG HERE
-    // ======================
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
-      projectId: "YOUR_PROJECT",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Initialize Firebase
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const goodsRef = database.ref('goods');
-
-    // ======================
-    // 2. Post a new good
-    // ======================
-    document.getElementById('add-good-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-
-      const name = document.getElementById('name').value.trim();
-      const price = document.getElementById('price').value;
-      const description = document.getElementById('description').value.trim();
-      const image = document.getElementById('image').value.trim();
-
-      const newGood = {
-        name: name,
-        price: Number(price),
-        description: description,
-        image: image,
-        createdAt: Date.now()
-      };
-
-      // Push to Firebase Realtime Database
-      goodsRef.push(newGood)
-        .then(() => {
-          alert("Good posted successfully!");
-          document.getElementById('add-good-form').reset();
-        })
-        .catch((error) => {
-          console.error(error);
-          alert("Error posting good. Check console.");
-        });
-    });
-
-    // ======================
-    // 3. Live display of all goods
-    // ======================
-    goodsRef.on('value', (snapshot) => {
-      const goodsList = document.getElementById('goods-list');
-      goodsList.innerHTML = '';
-
-      if (!snapshot.exists()) {
-        goodsList.innerHTML = '<div class="empty">No goods posted yet. Be the first!</div>';
-        return;
-      }
-
-      // Convert to array and sort by newest first
-      const goods = [];
-      snapshot.forEach((child) => {
-        goods.push({ id: child.key, ...child.val() });
-      });
-      goods.sort((a, b) => b.createdAt - a.createdAt);
-
-      goods.forEach((good) => {
-        const card = document.createElement('div');
-        card.className = 'good-card';
-        card.innerHTML = `
-          <img src="${good.image}" alt="${good.name}" onerror="this.src='https://via.placeholder.com/300x200?text=No+Image'">
-          <div class="good-info">
-            <h3>${good.name}</h3>
-            <div class="price">KES ${good.price.toLocaleString()}</div>
-            <p class="description">${good.description}</p>
-          </div>
-        `;
-        goodsList.appendChild(card);
-      });
-    });
-  </script>
-</body>
-</html>
-2. How to set up Firebase (important)
-Go to https://console.firebase.google.com
-Create a new project (or use existing)
-Click Realtime Database → Create Database → Start in test mode (for now)
-Go to Project Settings (gear icon) → General → scroll down to “Your apps” → click the web icon </>
-Register the app and copy the firebaseConfig object
-Paste it into the code above (replace the placeholder)
-3. Security note (important later)
-While testing, the database is open.
-When you go live, change the rules to something safer, for example:
-
-json
-{
-  "rules": {
-    "goods": {
-      ".read": true,
-      ".write": true
-    }
-  }
-}
-(You can make it stricter later with authentication if you want.)
-
-Would you like me to also add:
-
-Delete button for each good?
-Edit functionality?
-Image upload (using Firebase Storage instead of URL)?
-User login so only you can post?
-Just tell me what extra features you want and I’ll update the code.
-
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thrill Fashion Store</title>
-<style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f2f2f2} header{background:#000;color:#fff;padding:12px;display:flex;gap:8px;position:sticky;top:0;z-index:20}
-header b span{color:#ff2a6d} input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff}
-.tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;border-bottom:1px solid #e5e5e5;position:sticky;top:50px;z-index:10}
-.tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap}
-.tags b.active{background:#000;color:#fff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #eee;position:relative}
-.card img{width:100%;height:210px;object-fit:cover}
-.badge{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff}
-.badge.new{background:#ff2a6d} .badge.out{background:#888} .badge.neg{top:8px;right:8px;left:auto;background:#ff9800}
-.info{padding:9px} .info h4{font-size:12px;height:32px;overflow:hidden}
-.price{font-weight:bold} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
-.jiji-meta{font-size:10px;color:#888;margin:4px 0;display:flex;gap:6px;flex-wrap:wrap}
-.jiji-meta span{background:#f5f5f5;padding:2px 6px;border-radius:4px}
-.order{width:100%;background:#25D366;color:#fff;border:0;padding:9px;border-radius:8px;font-weight:bold;margin-top:6px;font-size:11px}
-.order.outbtn{background:#000}
-.footer{background:#000;color:#aaa;padding:20px;text-align:center;font-size:11px}
-.wa{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;z-index:99}
-#adminPanel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:100;padding:14px;overflow:auto}
-#adminPanel input, #adminPanel select{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ddd}
-#adminPanel button{width:100%;padding:12px;border-radius:10px;border:0;font-weight:bold;margin-top:8px}
-.btn-black{background:#000;color:#fff} .btn-pink{background:#ff2a6d;color:#fff} .btn-green{background:#25D366;color:#fff}
-</style>
-</head>
-<body>
-<header><b onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="s" placeholder="Search..."></header>
-<div class="tags" id="tags"></div>
-<div class="grid" id="grid"></div>
-<a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion!" target="_blank">💬</a>
-<div id="adminPanel">
-<h3>Owner Panel 🔒</h3>
-<input id="pName" placeholder="Product Name">
-<input id="pPrice" placeholder="Price: UGX 145,000">
-<input id="pOld" placeholder="Old Price optional">
-<select id="pCat"><option value="abaya">Abaya</option><option value="sweater">Sweaters</option><option value="skirt">Skirts</option><option value="trouser">Trousers</option><option value="dress">Dresses</option><option value="top">Tops</option></select>
-<select id="pCond"><option value="Brand New">Brand New</option><option value="New with tag">New with tag</option><option value="UK Used">UK Used</option></select>
-<input type="file" id="pFile" accept="image/*">
-<label style="font-size:12px"><input type="checkbox" id="pOut"> OUT OF STOCK</label>
-<label style="font-size:12px"><input type="checkbox" id="pNeg" checked> Negotiable</label>
-<button class="btn-pink" onclick="addProduct()">+ Add to Preview</button>
-<button class="btn-green" onclick="downloadFile()">💾 SAVE & DOWNLOAD FILE</button>
-<button class="btn-black" onclick="closeAdmin()">Close</button>
-<div id="adminList" style="margin-top:10px"></div>
-</div>
-<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala<br>© 2026</div>
-<script>
-let permanentProducts=[
-{n:"Maroon Dubai Abaya - Gold Embroidery",p:"UGX 145,000",old:"180,000",c:"abaya",cond:"Brand New",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500"},
-{n:"Beige Fur Sweater",p:"UGX 85,000",old:"110,000",c:"sweater",cond:"New with tag",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500"},
-{n:"Pleated Skirt - Gold Wave",p:"UGX 65,000",old:"85,000",c:"skirt",cond:"Brand New",neg:false,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=500"},
-{n:"Cargo Jeans - Ladies",p:"UGX 70,000",old:"90,000",c:"trouser",cond:"UK Used",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500"}
-];
-let grid=document.getElementById('grid'),tagsDiv=document.getElementById('tags');
-let cats=['All','abaya','sweater','skirt','trouser','dress','top'];let currentFilter='';
-function renderTags(){tagsDiv.innerHTML='';cats.forEach(c=>{let b=document.createElement('b');b.textContent=c;if((c=='All'&&currentFilter=='')||c==currentFilter)b.className='active';b.onclick=()=>{currentFilter=c=='All'?'':c;renderTags();renderGrid();};tagsDiv.appendChild(b);});}
-function renderGrid(){let q=document.getElementById('s').value.toLowerCase();grid.innerHTML='';permanentProducts.filter(it=>{let catOk=currentFilter==''||it.c.includes(currentFilter);let searchOk=q==''||it.n.toLowerCase().includes(q);return catOk&&searchOk;}).forEach(it=>{let d=document.createElement('div');d.className='card';let outBadge=it.out?`<span class="badge out">OUT OF STOCK</span>`:`<span class="badge new">${it.cond}</span>`;let negBadge=it.neg?`<span class="badge neg">Negotiable</span>`:'';let msg=`Hello Thrill! I want: ${it.n} - ${it.p}`;d.innerHTML=`${outBadge}${negBadge}<img src="${it.img}"><div class="info"><h4>${it.n}</h4><div><span class="price">${it.p}</span><span class="old">${it.old||''}</span></div><div class="jiji-meta"><span>📍 ${it.loc}</span><span>${it.cond}</span></div><button class="${it.out?'order outbtn':'order'}" onclick="window.open('https://wa.me/256792350799?text=${encodeURIComponent(msg)}','_blank')">${it.out?'Out of Stock':'Order WhatsApp'}</button></div>`;grid.appendChild(d);});renderAdminList();}
-function renderAdminList(){let list=document.getElementById('adminList');list.innerHTML='<h4>Products ('+permanentProducts.length+')</h4>';permanentProducts.forEach((it,i)=>{let div=document.createElement('div');div.style.cssText='display:flex;gap:6px;align-items:center;margin:4px 0;background:#fff;padding:4px;border-radius:6px;font-size:11px';div.innerHTML=`<img src="${it.img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px"><span style="flex:1">${it.n}</span><button onclick="deletePerm(${i})" style="background:red;color:#fff;border:0;padding:4px 8px;border-radius:4px">X</button>`;list.appendChild(div);});}
-function addProduct(){let name=document.getElementById('pName').value;let price=document.getElementById('pPrice').value;let oldP=document.getElementById('pOld').value;let cat=document.getElementById('pCat').value;let cond=document.getElementById('pCond').value;let out=document.getElementById('pOut').checked;let neg=document.getElementById('pNeg').checked;let file=document.getElementById('pFile').files[0];if(!name||!price){alert('Add name & price');return;}if(!file){alert('Choose photo');return;}let reader=new FileReader();reader.onload=e=>{let newItem={n:name,p:price,old:oldP,c:cat,cond:cond,out:out,neg:neg,loc:"Kampala",img:e.target.result};permanentProducts.unshift(newItem);renderGrid();document.getElementById('pName').value='';document.getElementById('pFile').value='';alert('Added! Click SAVE & DOWNLOAD then upload to GitHub');};reader.readAsDataURL(file);}
-function deletePerm(i){if(confirm('Delete?')){permanentProducts.splice(i,1);renderGrid();}}
-function downloadFile(){let htmlContent=document.documentElement.outerHTML;let blob=new Blob([htmlContent],{type:'text/html'});let url=URL.createObjectURL(blob);let a=document.createElement('a');a.href=url;a.download='index.html';a.click();alert('Downloaded! Upload to GitHub');}
-function openAdmin(){let pass=prompt('Enter Password:');if(pass!=='thrill2026'){alert('Wrong password!');return;}document.getElementById('adminPanel').style.display='block';}
-function closeAdmin(){document.getElementById('adminPanel').style.display='none';}
-let tap=0;function tapLogo(){tap++;if(tap>=5){tap=0;openAdmin();}setTimeout(()=>tap=0,2000);}
-document.getElementById('s').oninput=renderGrid;renderTags();renderGrid();
-</script>
-</body>
-</html>
-
-Thought for 40s
-Here’s your Thrill Fashion Store code fully updated with Firebase Realtime Database.
-
-What changed:
-Products are now stored in Firebase (not only in the browser)
-When you add a product in the Owner Panel → it saves to Firebase
-When you delete a product → it is removed from Firebase
-The product list updates live for everyone
-Image is still stored as base64 (works for now). Later we can switch to Firebase Storage if you want better performance.
-Full Updated Code
-html
-<!DOCTYPE html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -393,11 +6,12 @@ html
 <title>Thrill Fashion Store</title>
 
 <!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.14.0/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-database-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.14.1/firebase-storage-compat.js"></script>
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
+*{margin:0;padding:0;box-sizing:border-box;font-family:Arial,sans-serif}
 body{background:#f2f2f2}
 header{background:#000;color:#fff;padding:12px;display:flex;gap:8px;position:sticky;top:0;z-index:20}
 header b span{color:#ff2a6d}
@@ -406,12 +20,13 @@ input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff
 .tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap}
 .tags b.active{background:#000;color:#fff}
 .grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
-.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #eee;position:relative}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #eee;position:relative;cursor:pointer}
 .card img{width:100%;height:210px;object-fit:cover}
 .badge{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff}
 .badge.new{background:#ff2a6d}
 .badge.out{background:#888}
 .badge.neg{top:8px;right:8px;left:auto;background:#ff9800}
+.badge.photos{top:8px;right:8px;left:auto;background:#2196F3}
 .info{padding:9px}
 .info h4{font-size:12px;height:32px;overflow:hidden}
 .price{font-weight:bold}
@@ -422,12 +37,44 @@ input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff
 .order.outbtn{background:#000}
 .footer{background:#000;color:#aaa;padding:20px;text-align:center;font-size:11px}
 .wa{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;z-index:99}
-#adminPanel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:100;padding:14px;overflow:auto}
-#adminPanel input, #adminPanel select{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ddd}
-#adminPanel button{width:100%;padding:12px;border-radius:10px;border:0;font-weight:bold;margin-top:8px}
+
+/* Admin & Login */
+#adminPanel,#loginModal,#detailModal{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:100;padding:16px;overflow:auto}
+#adminPanel input, #adminPanel select, #loginModal input{width:100%;padding:12px;margin:6px 0;border-radius:10px;border:1px solid #ddd;font-size:15px}
+#adminPanel button, #loginModal button{width:100%;padding:13px;border-radius:10px;border:0;font-weight:bold;margin-top:8px;font-size:15px}
 .btn-black{background:#000;color:#fff}
 .btn-pink{background:#ff2a6d;color:#fff}
 .btn-green{background:#25D366;color:#fff}
+.btn-orange{background:#ff9800;color:#fff}
+.btn-red{background:#e53935;color:#fff}
+.loading{text-align:center;padding:40px;color:#666}
+
+/* Drag & Drop */
+.drop-zone{border:2px dashed #ccc;border-radius:12px;padding:25px;text-align:center;margin:10px 0;background:#fafafa;transition:0.2s}
+.drop-zone.dragover{border-color:#ff2a6d;background:#fff0f5}
+.drop-zone p{color:#666;font-size:14px}
+.preview-images{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.preview-images img{width:70px;height:70px;object-fit:cover;border-radius:8px;border:2px solid #ddd}
+.preview-images .img-box{position:relative}
+.preview-images .remove-img{position:absolute;top:-6px;right:-6px;background:red;color:#fff;border:0;border-radius:50%;width:20px;height:20px;font-size:12px;cursor:pointer}
+
+.admin-item{display:flex;gap:8px;align-items:center;margin:8px 0;background:#f5f5f5;padding:10px;border-radius:10px;font-size:13px}
+.admin-item img{width:55px;height:55px;object-fit:cover;border-radius:8px}
+.admin-actions{display:flex;gap:5px}
+.admin-actions button{padding:6px 12px;border:0;border-radius:6px;color:#fff;font-size:12px}
+
+/* Product Detail Modal */
+#detailModal{background:#000;color:#fff;padding:0}
+.detail-header{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;background:#111}
+.detail-header button{background:none;border:0;color:#fff;font-size:24px}
+.detail-main-img{width:100%;height:55vh;object-fit:contain;background:#111}
+.detail-thumbs{display:flex;gap:8px;overflow-x:auto;padding:12px;background:#111}
+.detail-thumbs img{width:70px;height:70px;object-fit:cover;border-radius:8px;border:2px solid transparent;cursor:pointer}
+.detail-thumbs img.active{border-color:#ff2a6d}
+.detail-info{padding:16px;background:#fff;color:#000;border-radius:20px 20px 0 0;margin-top:-15px}
+.detail-info h2{font-size:18px;margin-bottom:8px}
+.detail-price{font-size:20px;font-weight:bold;color:#ff2a6d;margin:8px 0}
+.detail-order{width:100%;background:#25D366;color:#fff;border:0;padding:14px;border-radius:12px;font-weight:bold;font-size:16px;margin-top:16px}
 </style>
 </head>
 <body>
@@ -438,12 +85,449 @@ input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff
 </header>
 
 <div class="tags" id="tags"></div>
-<div class="grid" id="grid"></div>
+<div class="grid" id="grid">
+  <div class="loading">Loading products...</div>
+</div>
 
 <a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion!" target="_blank">💬</a>
 
+<!-- Login Modal -->
+<div id="loginModal">
+  <h2 style="text-align:center;margin:40px 0 20px">Owner Login 🔒</h2>
+  <input type="password" id="adminPass" placeholder="Enter Password">
+  <button class="btn-pink" onclick="checkLogin()">Login</button>
+  <button class="btn-black" onclick="closeLogin()">Cancel</button>
+  <p id="loginError" style="color:red;text-align:center;margin-top:12px"></p>
+</div>
+
+<!-- Admin Panel -->
 <div id="adminPanel">
-  <h3>Owner Panel 🔒</h3>
+  <h3 id="adminTitle">Owner Panel 🔒</h3>
+  
+  <input type="hidden" id="editId">
+  
   <input id="pName" placeholder="Product Name">
   <input id="pPrice" placeholder="Price: UGX 145,000">
-  <input id="pOld
+  <input id="pOld" placeholder="Old Price (optional)">
+  
+  <select id="pCat">
+    <option value="abaya">Abaya</option>
+    <option value="sweater">Sweaters</option>
+    <option value="skirt">Skirts</option>
+    <option value="trouser">Trousers</option>
+    <option value="dress">Dresses</option>
+    <option value="top">Tops</option>
+  </select>
+  
+  <select id="pCond">
+    <option value="Brand New">Brand New</option>
+    <option value="New with tag">New with tag</option>
+    <option value="UK Used">UK Used</option>
+  </select>
+  
+  <div class="drop-zone" id="dropZone">
+    <p>📷 Drag & drop images here<br>or click to select (multiple allowed)</p>
+    <input type="file" id="pFile" accept="image/*" multiple style="display:none">
+  </div>
+  
+  <div class="preview-images" id="previewImages"></div>
+  
+  <label style="font-size:14px;display:block;margin:8px 0">
+    <input type="checkbox" id="pOut"> OUT OF STOCK
+  </label>
+  <label style="font-size:14px;display:block;margin:8px 0">
+    <input type="checkbox" id="pNeg" checked> Negotiable
+  </label>
+  
+  <button class="btn-pink" id="mainBtn" onclick="saveProduct()">+ Add Product</button>
+  <button class="btn-black" onclick="cancelEdit()" id="cancelBtn" style="display:none">Cancel Edit</button>
+  <button class="btn-black" onclick="closeAdmin()">Close Panel</button>
+  
+  <div id="adminList" style="margin-top:20px"></div>
+</div>
+
+<!-- Product Detail Modal -->
+<div id="detailModal">
+  <div class="detail-header">
+    <button onclick="closeDetail()">← Back</button>
+    <span id="detailTitle">Product</span>
+    <span></span>
+  </div>
+  <img id="detailMainImg" class="detail-main-img" src="">
+  <div class="detail-thumbs" id="detailThumbs"></div>
+  <div class="detail-info">
+    <h2 id="detailName"></h2>
+    <div class="detail-price">
+      <span id="detailPrice"></span>
+      <span id="detailOld" style="color:#999;text-decoration:line-through;font-size:14px;margin-left:8px"></span>
+    </div>
+    <div id="detailMeta" style="font-size:13px;color:#666;margin:10px 0"></div>
+    <button class="detail-order" id="detailOrderBtn">Order on WhatsApp</button>
+  </div>
+</div>
+
+<div class="footer">
+  <b style="color:#ff2a6d">THRILL FASHION STORE</b><br>
+  📞 +256 792 350799 | Kampala<br>
+  © 2026
+</div>
+
+<script>
+// ======================
+// 1. PASTE YOUR FIREBASE CONFIG HERE
+// ======================
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  databaseURL: "https://YOUR_PROJECT-default-rtdb.firebaseio.com",
+  projectId: "YOUR_PROJECT",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
+};
+
+// ======================
+// CHANGE PASSWORD HERE
+// ======================
+const ADMIN_PASSWORD = 'thrill2026';
+
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const storage = firebase.storage();
+
+// ======================
+// Variables
+// ======================
+let products = [];
+let selectedFiles = [];
+let existingImages = [];
+let grid = document.getElementById('grid');
+let tagsDiv = document.getElementById('tags');
+let cats = ['All', 'In Stock', 'Out of Stock', 'abaya', 'sweater', 'skirt', 'trouser', 'dress', 'top'];
+let currentFilter = '';
+let isEditing = false;
+
+// ======================
+// Real-time listener
+// ======================
+db.ref('products').on('value', (snapshot) => {
+  const data = snapshot.val();
+  products = [];
+  if (data) {
+    Object.keys(data).forEach(key => {
+      products.push({ id: key, ...data[key] });
+    });
+    products.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+  }
+  renderTags();
+  renderGrid();
+  renderAdminList();
+});
+
+// ======================
+// Render Tags
+// ======================
+function renderTags() {
+  tagsDiv.innerHTML = '';
+  cats.forEach(c => {
+    let b = document.createElement('b');
+    b.textContent = c;
+    if ((c === 'All' && currentFilter === '') || c === currentFilter) b.className = 'active';
+    b.onclick = () => {
+      currentFilter = c === 'All' ? '' : c;
+      renderTags();
+      renderGrid();
+    };
+    tagsDiv.appendChild(b);
+  });
+}
+
+// ======================
+// Render Grid
+// ======================
+function renderGrid() {
+  let q = document.getElementById('s').value.toLowerCase();
+  grid.innerHTML = '';
+
+  const filtered = products.filter(it => {
+    let catOk = true;
+    if (currentFilter === 'In Stock') catOk = !it.out;
+    else if (currentFilter === 'Out of Stock') catOk = it.out;
+    else if (currentFilter !== '') catOk = it.c.includes(currentFilter);
+
+    let searchOk = q === '' || it.n.toLowerCase().includes(q);
+    return catOk && searchOk;
+  });
+
+  if (filtered.length === 0) {
+    grid.innerHTML = '<div class="loading">No products found</div>';
+    return;
+  }
+
+  filtered.forEach(it => {
+    const images = it.imgs || (it.img ? [it.img] : []);
+    const mainImg = images[0] || '';
+    const photoCount = images.length;
+
+    let d = document.createElement('div');
+    d.className = 'card';
+    d.onclick = () => openDetail(it.id);
+
+    let outBadge = it.out ? `<span class="badge out">OUT OF STOCK</span>` : `<span class="badge new">${it.cond}</span>`;
+    let negBadge = it.neg ? `<span class="badge neg">Negotiable</span>` : '';
+    let photosBadge = photoCount > 1 ? `<span class="badge photos">${photoCount} photos</span>` : '';
+
+    let msg = `Hello Thrill! I want: ${it.n} - ${it.p}`;
+
+    d.innerHTML = `
+      ${outBadge}${negBadge}${photosBadge}
+      <img src="${mainImg}" alt="${it.n}" loading="lazy">
+      <div class="info">
+        <h4>${it.n}</h4>
+        <div>
+          <span class="price">${it.p}</span>
+          <span class="old">${it.old || ''}</span>
+        </div>
+        <div class="jiji-meta">
+          <span>📍 ${it.loc || 'Kampala'}</span>
+          <span>${it.cond}</span>
+        </div>
+        <button class="${it.out ? 'order outbtn' : 'order'}"
+          onclick="event.stopPropagation(); window.open('https://wa.me/256792350799?text=${encodeURIComponent(msg)}','_blank')">
+          ${it.out ? 'Out of Stock' : 'Order WhatsApp'}
+        </button>
+      </div>
+    `;
+    grid.appendChild(d);
+  });
+}
+
+// ======================
+// Product Detail Modal
+// ======================
+function openDetail(id) {
+  const it = products.find(p => p.id === id);
+  if (!it) return;
+
+  const images = it.imgs || (it.img ? [it.img] : []);
+  
+  document.getElementById('detailName').textContent = it.n;
+  document.getElementById('detailPrice').textContent = it.p;
+  document.getElementById('detailOld').textContent = it.old || '';
+  document.getElementById('detailTitle').textContent = it.n.substring(0, 20) + (it.n.length > 20 ? '...' : '');
+  
+  document.getElementById('detailMeta').innerHTML = `
+    <div>📍 ${it.loc || 'Kampala'} • ${it.cond}</div>
+    <div style="margin-top:6px">${it.neg ? '✅ Negotiable' : '❌ Fixed Price'} ${it.out ? '• <b style="color:red">OUT OF STOCK</b>' : ''}</div>
+  `;
+
+  // Main image
+  const mainImg = document.getElementById('detailMainImg');
+  mainImg.src = images[0] || '';
+
+  // Thumbnails
+  const thumbs = document.getElementById('detailThumbs');
+  thumbs.innerHTML = '';
+  images.forEach((url, i) => {
+    const img = document.createElement('img');
+    img.src = url;
+    if (i === 0) img.classList.add('active');
+    img.onclick = () => {
+      mainImg.src = url;
+      thumbs.querySelectorAll('img').forEach(t => t.classList.remove('active'));
+      img.classList.add('active');
+    };
+    thumbs.appendChild(img);
+  });
+
+  // Order button
+  const msg = `Hello Thrill! I want: ${it.n} - ${it.p}`;
+  const orderBtn = document.getElementById('detailOrderBtn');
+  orderBtn.textContent = it.out ? 'Out of Stock' : 'Order on WhatsApp';
+  orderBtn.style.background = it.out ? '#555' : '#25D366';
+  orderBtn.onclick = () => {
+    if (!it.out) window.open(`https://wa.me/256792350799?text=${encodeURIComponent(msg)}`, '_blank');
+  };
+
+  document.getElementById('detailModal').style.display = 'block';
+}
+
+function closeDetail() {
+  document.getElementById('detailModal').style.display = 'none';
+}
+
+// ======================
+// Admin List
+// ======================
+function renderAdminList() {
+  let list = document.getElementById('adminList');
+  list.innerHTML = `<h4 style="margin:15px 0 10px">All Products (${products.length})</h4>`;
+
+  products.forEach((it) => {
+    const images = it.imgs || (it.img ? [it.img] : []);
+    let div = document.createElement('div');
+    div.className = 'admin-item';
+    div.innerHTML = `
+      <img src="${images[0] || ''}">
+      <div style="flex:1">
+        <b>${it.n}</b><br>
+        <small>${it.p} • ${it.cond} • ${images.length} photo(s)</small>
+      </div>
+      <div class="admin-actions">
+        <button style="background:#ff9800" onclick="startEdit('${it.id}')">Edit</button>
+        <button style="background:#e53935" onclick="deleteProduct('${it.id}')">X</button>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+}
+
+// ======================
+// Drag & Drop
+// ======================
+const dropZone = document.getElementById('dropZone');
+const fileInput = document.getElementById('pFile');
+
+dropZone.onclick = () => fileInput.click();
+dropZone.addEventListener('dragover', (e) => { e.preventDefault(); dropZone.classList.add('dragover'); });
+dropZone.addEventListener('dragleave', () => dropZone.classList.remove('dragover'));
+dropZone.addEventListener('drop', (e) => {
+  e.preventDefault();
+  dropZone.classList.remove('dragover');
+  handleFiles(e.dataTransfer.files);
+});
+fileInput.onchange = () => handleFiles(fileInput.files);
+
+function handleFiles(files) {
+  for (let file of files) {
+    if (file.type.startsWith('image/')) selectedFiles.push(file);
+  }
+  renderPreviews();
+}
+
+function renderPreviews() {
+  const container = document.getElementById('previewImages');
+  container.innerHTML = '';
+
+  existingImages.forEach((url, index) => {
+    const box = document.createElement('div');
+    box.className = 'img-box';
+    box.innerHTML = `<img src="${url}"><button class="remove-img" onclick="removeExistingImage(${index})">×</button>`;
+    container.appendChild(box);
+  });
+
+  selectedFiles.forEach((file, index) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const box = document.createElement('div');
+      box.className = 'img-box';
+      box.innerHTML = `<img src="${e.target.result}"><button class="remove-img" onclick="removeSelectedFile(${index})">×</button>`;
+      container.appendChild(box);
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+function removeExistingImage(index) {
+  existingImages.splice(index, 1);
+  renderPreviews();
+}
+function removeSelectedFile(index) {
+  selectedFiles.splice(index, 1);
+  renderPreviews();
+}
+
+// ======================
+// Save Product
+// ======================
+async function saveProduct() {
+  const name = document.getElementById('pName').value.trim();
+  const price = document.getElementById('pPrice').value.trim();
+  const oldP = document.getElementById('pOld').value.trim();
+  const cat = document.getElementById('pCat').value;
+  const cond = document.getElementById('pCond').value;
+  const out = document.getElementById('pOut').checked;
+  const neg = document.getElementById('pNeg').checked;
+  const editId = document.getElementById('editId').value;
+
+  if (!name || !price) return alert('Please enter Name and Price');
+  if (existingImages.length === 0 && selectedFiles.length === 0) return alert('Please add at least one photo');
+
+  const mainBtn = document.getElementById('mainBtn');
+  mainBtn.disabled = true;
+  mainBtn.textContent = isEditing ? 'Updating...' : 'Uploading...';
+
+  try {
+    let uploadedUrls = [...existingImages];
+
+    for (let file of selectedFiles) {
+      const fileName = Date.now() + '_' + Math.random().toString(36).slice(2) + '_' + file.name.replace(/\s+/g, '_');
+      const storageRef = storage.ref('products/' + fileName);
+      const snapshot = await storageRef.put(file);
+      const url = await snapshot.ref.getDownloadURL();
+      uploadedUrls.push(url);
+    }
+
+    const productData = {
+      n: name,
+      p: price,
+      old: oldP,
+      c: cat,
+      cond: cond,
+      out: out,
+      neg: neg,
+      loc: "Kampala",
+      imgs: uploadedUrls,
+      img: uploadedUrls[0],
+      createdAt: isEditing ? (products.find(p => p.id === editId)?.createdAt || Date.now()) : Date.now(),
+      updatedAt: Date.now()
+    };
+
+    if (isEditing) {
+      await db.ref('products/' + editId).update(productData);
+      alert('✅ Product updated!');
+    } else {
+      await db.ref('products').push(productData);
+      alert('✅ Product added!');
+    }
+    resetForm();
+  } catch (error) {
+    alert('Error: ' + error.message);
+  }
+
+  mainBtn.disabled = false;
+  mainBtn.textContent = isEditing ? 'Update Product' : '+ Add Product';
+}
+
+// ======================
+// Edit / Delete / Reset
+// ======================
+function startEdit(id) {
+  const product = products.find(p => p.id === id);
+  if (!product) return;
+
+  isEditing = true;
+  document.getElementById('editId').value = id;
+  document.getElementById('pName').value = product.n;
+  document.getElementById('pPrice').value = product.p;
+  document.getElementById('pOld').value = product.old || '';
+  document.getElementById('pCat').value = product.c;
+  document.getElementById('pCond').value = product.cond;
+  document.getElementById('pOut').checked = product.out;
+  document.getElementById('pNeg').checked = product.neg;
+
+  existingImages = product.imgs || (product.img ? [product.img] : []);
+  selectedFiles = [];
+  renderPreviews();
+
+  document.getElementById('adminTitle').textContent = 'Editing: ' + product.n;
+  document.getElementById('mainBtn').textContent = 'Update Product';
+  document.getElementById('mainBtn').className = 'btn-orange';
+  document.getElementById('cancelBtn').style.display = 'block';
+  document.getElementById('adminPanel').scrollTop = 0;
+}
+
+function cancelEdit() { resetForm(); }
+
+function resetForm() {
+  isEd
