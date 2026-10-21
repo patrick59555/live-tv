@@ -3,167 +3,78 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Thrill Fashion Store</title>
+<title>Thrill Fashion Store - PERMANENT</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Arial}
-body{background:#f2f2f2} header{background:#000;color:#fff;padding:14px;display:flex;gap:10px;align-items:center;position:sticky;top:0;z-index:20}
-header b{font-size:18px} header b span{color:#ff2a6d} header input{flex:1;padding:12px;border-radius:20px;border:0;background:#222;color:#fff}
-.tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;position:sticky;top:52px;z-index:10;border-bottom:1px solid #eee}
-.tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap} .tags b.active{background:#000;color:#fff}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px;min-height:300px}
-.card{background:#fff;border-radius:12px;overflow:hidden;border:1px solid #eee;position:relative}
-.card img{width:100%;height:240px;object-fit:cover;background:#f5f5f5}
-.badge{position:absolute;top:8px;left:8px;padding:5px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;z-index:2}
-.new{background:#ff2a6d} .out{background:#444} .neg{position:absolute;top:8px;right:8px;background:#ff9800;color:#fff;padding:4px 7px;border-radius:6px;font-size:10px;font-weight:bold;z-index:2}
-.info{padding:8px} .info h4{font-size:12px;height:32px;overflow:hidden;line-height:1.3}
-.price{font-weight:bold} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
-.meta{font-size:10px;color:#777;margin:4px 0} .btn{width:100%;padding:12px;border:0;border-radius:8px;font-weight:bold;margin-top:5px;font-size:13px}
-.btn-green{background:#25D366;color:#fff} .btn-black{background:#000;color:#fff}
-.footer{background:#000;color:#aaa;padding:22px;text-align:center;font-size:12px}
-.wa{position:fixed;bottom:20px;right:16px;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;text-decoration:none;z-index:10}
-#panel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:1000;padding:15px;overflow:auto}
-#panel input,#panel select{width:100%;padding:12px;margin:6px 0;border:1px solid #ddd;border-radius:10px}
-.itemRow{display:flex;gap:8px;align-items:center;background:#f9f9f9;padding:8px;border-radius:10px;margin:6px 0}
-.itemRow img{width:50px;height:50px;border-radius:8px;object-fit:cover} .itemRow b{flex:1;font-size:12px}
-.delOne{background:red;color:#fff;border:0;padding:6px 12px;border-radius:8px}
+body{background:#f2f2f2} header{background:#000;color:#fff;padding:12px;display:flex;gap:8px;position:sticky;top:0;z-index:20}
+header b span{color:#ff2a6d} input{flex:1;padding:11px;border-radius:20px;border:0;background:#222;color:#fff}
+.tags{display:flex;gap:8px;overflow:auto;padding:10px;background:#fff;border-bottom:1px solid #e5e5e5;position:sticky;top:50px;z-index:10}
+.tags b{background:#ffe4ea;padding:8px 14px;border-radius:20px;font-size:12px;white-space:nowrap}
+.tags b.active{background:#000;color:#fff}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:10px}
+.card{background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.08);border:1px solid #eee;position:relative}
+.card img{width:100%;height:210px;object-fit:cover;background:#fafafa}
+.badge{position:absolute;top:8px;left:8px;padding:4px 8px;border-radius:6px;font-size:10px;font-weight:bold;color:#fff;z-index:2}
+.badge.new{background:#ff2a6d} .badge.out{background:#888} .badge.neg{top:8px;right:8px;left:auto;background:#ff9800}
+.info{padding:9px} .info h4{font-size:12px;height:32px;overflow:hidden;line-height:1.3}
+.price{font-weight:bold;font-size:14px} .old{color:#999;text-decoration:line-through;font-size:11px;margin-left:4px}
+.jiji-meta{font-size:10px;color:#888;margin:4px 0;display:flex;gap:6px;flex-wrap:wrap}
+.jiji-meta span{background:#f5f5f5;padding:2px 6px;border-radius:4px}
+.order{width:100%;background:#25D366;color:#fff;border:0;padding:9px;border-radius:8px;font-weight:bold;margin-top:6px;font-size:11px}
+.order.outbtn{background:#000}
+.footer{background:#000;color:#aaa;padding:20px;text-align:center;font-size:11px}
+.wa{position:fixed;bottom:16px;right:16px;background:#25D366;color:#fff;width:52px;height:52px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px;text-decoration:none;z-index:99}
+#adminPanel{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:#fff;z-index:100;padding:14px;overflow:auto}
+#adminPanel input, #adminPanel select{width:100%;padding:11px;margin:5px 0;border-radius:10px;border:1px solid #ddd;font-size:13px}
+#adminPanel label{font-size:12px;display:flex;gap:6px;align-items:center;margin:6px 0}
+#adminPanel button{width:100%;padding:12px;border-radius:10px;border:0;font-weight:bold;margin-top:8px}
+.btn-black{background:#000;color:#fff} .btn-pink{background:#ff2a6d;color:#fff} .btn-green{background:#25D366;color:#fff}
+.adminBtn{position:fixed;bottom:16px;left:16px;background:#000;color:#fff;padding:9px 12px;border-radius:20px;font-size:11px;z-index:99;border:1px solid #ff2a6d}
 </style>
 </head>
 <body>
-<header><b id="logo" onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="search" placeholder="Search..." oninput="render()"></header>
+<header><b onclick="tapLogo()">THRILL <span>FASHION</span></b><input id="s" placeholder="Search abaya, sweater..."></header>
 <div class="tags" id="tags"></div>
+<div style="padding:8px;text-align:center;font-size:11px;background:#e8f5e9;color:green">🟢 PERMANENT - Everyone sees same products</div>
 <div class="grid" id="grid"></div>
-<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala Delivery<br>© 2026 Thrill Fashion</div>
-<a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion" target="_blank">💬</a>
-
-<div id="panel">
-<h2>Owner Panel - Fixed</h2>
-<div id="myList" style="margin:10px 0"></div>
-<hr style="margin:12px 0">
-<h3>Add New</h3>
-<input id="pName" placeholder="Name: Classic Abaya">
-<input id="pPrice" placeholder="Price: UGX 65,000">
-<input id="pOld" placeholder="Old price: 80,000 (optional)">
+<a class="wa" href="https://wa.me/256792350799?text=Hello%20Thrill%20Fashion%20Store!" target="_blank">💬</a>
+<button class="adminBtn" onclick="openAdmin()">⚙️ Owner Edit</button>
+<div id="adminPanel">
+<h3>Thrill Owner - PERMANENT</h3>
+<p style="font-size:11px;color:green">✅ Add product → Click GREEN button → Upload file to GitHub → Everyone sees!</p>
+<input id="pName" placeholder="Product Name">
+<input id="pPrice" placeholder="Price: UGX 145,000">
+<input id="pOld" placeholder="Old Price optional">
 <select id="pCat"><option value="abaya">Abaya</option><option value="sweater">Sweaters</option><option value="skirt">Skirts</option><option value="trouser">Trousers</option><option value="dress">Dresses</option><option value="top">Tops</option></select>
-<select id="pCond"><option>Brand New</option><option>New with tag</option><option>UK Used</option></select>
+<select id="pCond"><option value="Brand New">Brand New</option><option value="New with tag">New with tag</option><option value="UK Used">UK Used</option></select>
 <input type="file" id="pFile" accept="image/*">
-<div style="display:flex;gap:15px;margin:8px 0;font-size:13px">
-<label><input type="checkbox" id="pOut"> Out of Stock</label>
+<label><input type="checkbox" id="pOut"> OUT OF STOCK</label>
 <label><input type="checkbox" id="pNeg" checked> Negotiable</label>
+<button class="btn-pink" onclick="addProduct()">+ Add to Preview</button>
+<button class="btn-green" onclick="downloadFile()">💾 SAVE & GENERATE FILE FOR GITHUB</button>
+<button class="btn-black" onclick="closeAdmin()">Close</button>
+<div id="adminList" style="margin-top:10px"></div>
 </div>
-<button class="btn btn-black" id="addBtn" onclick="addProduct()">+ ADD LIVE FOR ALL</button>
-<p id="status" style="font-size:12px;color:#2e7d32;margin-top:8px"></p>
-<button class="btn" style="background:#eee;margin-top:8px" onclick="document.getElementById('panel').style.display='none'">Close</button>
-</div>
-
+<div class="footer"><b style="color:#ff2a6d">THRILL FASHION STORE</b><br>📞 +256 792 350799 | Kampala<br>© 2026</div>
 <script>
-let products = JSON.parse(localStorage.getItem('thrill_live')||'[]');
-let _filter = '';
-
-function render(){
- let q=document.getElementById('search').value.toLowerCase();
- let grid=document.getElementById('grid');
- let html='';
- products.filter(p=>{
-  if(_filter && p.c.indexOf(_filter)==-1) return false;
-  if(q && p.n.toLowerCase().indexOf(q)==-1) return false;
-  return true;
- }).forEach((p,i)=>{
-  let badge=p.out?'<span class="badge out">OUT OF STOCK</span>':'<span class="badge new">'+p.cond+'</span>';
-  let neg=p.neg?'<span class="neg">Negotiable</span>':'';
-  let op=p.out?'style="opacity:0.5;filter:grayscale(0.6)"':'';
-  let btnC=p.out?'btn btn-black':'btn btn-green';
-  let btnT=p.out?'Out of Stock - Ask':'Order on WhatsApp';
-  let msg="Hello Thrill! I want "+p.n+" - "+p.p;
-  html+='<div class="card">'+badge+neg+'<img src="'+p.img+'" '+op+'><div class="info"><h4>'+p.n+'</h4><div><span class="price">'+p.p+'</span><span class="old">'+(p.old||'')+'</span></div><div class="meta">📍 Kampala • '+p.cond+'</div><button class="'+btnC+'" onclick="window.open(\'https://wa.me/256792350799?text='+encodeURIComponent(msg)+'\',\'_blank\')">'+btnT+'</button></div></div>';
- });
- grid.innerHTML=html||"<div style='padding:40px;text-align:center;color:#888'><h3 style='color:#000'>Welcome!</h3><p style='margin-top:8px'>No products yet. Owner tap logo 5x to add Classic Abaya.</p></div>";
- buildList();
-}
-
-function buildList(){
- let list=document.getElementById('myList');
- if(products.length==0){list.innerHTML='<p style="font-size:12px;color:#888">No products - add Classic Abaya 65k</p>';return;}
- list.innerHTML=products.map((p,i)=>'<div class="itemRow"><img src="'+p.img+'"><b>'+p.n+'<br><span style="color:#ff2a6d">'+p.p+'</span> '+(p.out?'(OUT)':'')+'</b><button class="delOne" onclick="delOne('+i+')">Delete</button></div>').join('');
-}
-
-function addProduct(){
- let name=document.getElementById('pName').value.trim();
- let price=document.getElementById('pPrice').value.trim();
- let oldP=document.getElementById('pOld').value.trim();
- let cat=document.getElementById('pCat').value;
- let cond=document.getElementById('pCond').value;
- let out=document.getElementById('pOut').checked?1:0;
- let neg=document.getElementById('pNeg').checked?1:0;
- let file=document.getElementById('pFile').files[0];
- let status=document.getElementById('status');
- let btn=document.getElementById('addBtn');
-
- if(!name||!price){alert('Enter Name and Price (e.g. Classic Abaya / 65000)');return;}
- if(!file){alert('Choose photo from gallery');return;}
-
- btn.textContent='Compressing photo...';
- status.textContent='Please wait, making photo small for fast loading...';
-
- let reader=new FileReader();
- reader.onload=e=>{
-  let img=new Image();
-  img.onload=()=>{
-   let canvas=document.createElement('canvas');
-   let max=800;
-   let w=img.width, h=img.height;
-   if(w>h){if(w>max){h*=max/w; w=max;}}else{if(h>max){w*=max/h; h=max;}}
-   canvas.width=w; canvas.height=h;
-   canvas.getContext('2d').drawImage(img,0,0,w,h);
-   let compressed=canvas.toDataURL('image/jpeg',0.7);
-   
-   products.unshift({n:name,p:price.includes('UGX')?price:'UGX '+price,old:oldP?oldP:'',c:cat,cond:cond,out:out,neg:neg,img:compressed});
-   localStorage.setItem('thrill_live',JSON.stringify(products));
-   
-   document.getElementById('pName').value=''; document.getElementById('pPrice').value=''; document.getElementById('pOld').value=''; document.getElementById('pFile').value='';
-   btn.textContent='+ ADD LIVE FOR ALL';
-   status.textContent='✅ Added! Now visible to customers on this phone. To make it visible to ALL phones forever, send me screenshot of product list and I will make permanent code.';
-   render();
-   
-   setTimeout(()=>{document.getElementById('panel').style.display='none'; status.textContent='';},1500);
-  };
-  img.src=e.target.result;
- };
- reader.readAsDataURL(file);
-}
-
-function delOne(i){
- if(!confirm('Delete this ONE item?')) return;
- products.splice(i,1);
- localStorage.setItem('thrill_live',JSON.stringify(products));
- render();
-}
-
-let taps=0;
-function tapLogo(){
- taps++;
- if(taps>=5){
-  taps=0;
-  let pass=prompt('Owner PIN:');
-  if(pass=='350799'){
-   document.getElementById('panel').style.display='block';
-   buildList();
-  }else if(pass!=null){alert('Access denied');}
- }
- setTimeout(()=>taps=0,3000);
-}
-
-function buildTags(){
- let cats=['All','abaya','sweater','skirt','trouser','dress'];
- let h='';
- cats.forEach(c=>{
-  let a=(c=='All'&&!_filter)||_filter==c?'active':'';
-  h+='<b class="'+a+'" onclick="_filter=\''+(c=='All'?'':c)+'\';buildTags();render();">'+c+'</b>';
- });
- document.getElementById('tags').innerHTML=h;
-}
-
-buildTags();
-render();
+let permanentProducts = [
+{n:"Maroon Dubai Abaya - Gold Embroidery",p:"UGX 145,000",old:"180,000",c:"abaya",cond:"Brand New",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=500"},
+{n:"Beige Fur Sweater",p:"UGX 85,000",old:"110,000",c:"sweater",cond:"New with tag",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=500"},
+{n:"Pleated Skirt - Gold Wave",p:"UGX 65,000",old:"85,000",c:"skirt",cond:"Brand New",neg:false,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=500"},
+{n:"Cargo Jeans - Ladies",p:"UGX 70,000",old:"90,000",c:"trouser",cond:"UK Used",neg:true,out:false,loc:"Kampala",img:"https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=500"}
+];
+let grid=document.getElementById('grid'), tagsDiv=document.getElementById('tags');
+let cats=['All','abaya','sweater','skirt','trouser','dress','top']; let currentFilter='';
+function renderTags(){tagsDiv.innerHTML=''; cats.forEach(c=>{let b=document.createElement('b'); b.textContent=c; if((c=='All'&&currentFilter=='')||c==currentFilter) b.className='active'; b.onclick=()=>{currentFilter=c=='All'?'':c; renderTags(); renderGrid();}; tagsDiv.appendChild(b);});}
+function renderGrid(){let q=document.getElementById('s').value.toLowerCase(); grid.innerHTML=''; permanentProducts.filter(it=>{let catOk=currentFilter==''||it.c.includes(currentFilter); let searchOk=q==''||it.n.toLowerCase().includes(q); return catOk&&searchOk;}).forEach((it,idx)=>{let d=document.createElement('div'); d.className='card'; let outBadge=it.out?`<span class="badge out">OUT OF STOCK</span>`:`<span class="badge new">${it.cond}</span>`; let negBadge=it.neg?`<span class="badge neg">Negotiable</span>`:''; let soldOverlay=it.out?`style="opacity:0.6;filter:grayscale(0.5)"`:''; let btnText=it.out?'Out of Stock - Ask':'Order WhatsApp'; let btnClass=it.out?'order outbtn':'order'; let msg=`Hello Thrill! I want: ${it.n} - ${it.p}`; d.innerHTML=`${outBadge}${negBadge}<img src="${it.img}" ${soldOverlay}><div class="info"><h4>${it.n}</h4><div><span class="price">${it.p}</span><span class="old">${it.old||''}</span></div><div class="jiji-meta"><span>📍 ${it.loc}</span><span>${it.cond}</span></div><button class="${btnClass}" onclick="window.open('https://wa.me/256792350799?text=${encodeURIComponent(msg)}','_blank')">${btnText}</button></div>`; grid.appendChild(d);}); renderAdminList();}
+function renderAdminList(){let list=document.getElementById('adminList'); list.innerHTML='<h4>Products ('+permanentProducts.length+')</h4>'; permanentProducts.forEach((it,i)=>{let div=document.createElement('div'); div.style.cssText='display:flex;gap:6px;align-items:center;margin:4px 0;background:#fff;padding:4px;border-radius:6px;font-size:11px'; div.innerHTML=`<img src="${it.img}" style="width:40px;height:40px;object-fit:cover;border-radius:4px"><span style="flex:1">${it.n}</span><button onclick="deletePerm(${i})" style="background:red;color:#fff;border:0;padding:4px 8px;border-radius:4px">X</button>`; list.appendChild(div);});}
+function addProduct(){let name=document.getElementById('pName').value; let price=document.getElementById('pPrice').value; let oldP=document.getElementById('pOld').value; let cat=document.getElementById('pCat').value; let cond=document.getElementById('pCond').value; let out=document.getElementById('pOut').checked; let neg=document.getElementById('pNeg').checked; let file=document.getElementById('pFile').files[0]; if(!name||!price){alert('Add name & price');return;} if(!file){alert('Choose photo');return;} let reader=new FileReader(); reader.onload=e=>{let newItem={n:name,p:price,old:oldP,c:cat,cond:cond,out:out,neg:neg,loc:"Kampala",img:e.target.result}; permanentProducts.unshift(newItem); renderGrid(); document.getElementById('pName').value=''; document.getElementById('pFile').value=''; alert('Added to preview! Now click GREEN button to generate file');}; reader.readAsDataURL(file);}
+function deletePerm(i){if(confirm('Delete?')){permanentProducts.splice(i,1); renderGrid();}}
+function downloadFile(){let htmlContent=document.documentElement.outerHTML; let blob=new Blob([htmlContent],{type:'text/html'}); let url=URL.createObjectURL(blob); let a=document.createElement('a'); a.href=url; a.download='index.html'; a.click(); alert('index.html downloaded! Go to github.com/thrill-2/thrill-fashion-store → Upload this file → Commit → Done!');}
+function openAdmin(){document.getElementById('adminPanel').style.display='block';}
+function closeAdmin(){document.getElementById('adminPanel').style.display='none';}
+let tap=0; function tapLogo(){tap++; if(tap>=5){tap=0; openAdmin();} setTimeout(()=>tap=0,2000);}
+document.getElementById('s').oninput=renderGrid; renderTags(); renderGrid();
 </script>
 </body>
  </html>
